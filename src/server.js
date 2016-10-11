@@ -34,9 +34,6 @@ class Server{
                 this.errorHandler(err);
             });
 
-            debugger;
-            req.setSocketKeepAlive(true, 1000);
-
             req.on("data", (data) => {
                 if(req.method === "POST")
                     body = body.concat(data);
