@@ -4,6 +4,7 @@
 "use strict";
 
 import Server from "./server";
+import Socket from "./socket";
 
 const options = {
     hostname: "localhost",
@@ -11,6 +12,7 @@ const options = {
 };
 
 const server = new Server(options);
+const socket = new Socket(options);
 
 
 

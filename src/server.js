@@ -12,10 +12,7 @@ class Server{
 
     constructor(options) {
         this.messages = [];
-        this.connectionPool = [];
-        const agent = http.Agent({
-            keepAlive: true,
-        });
+        const agent = http.globalAgent;
 
         options = Object.assign({}, options, {
             agent: agent
@@ -28,9 +25,6 @@ class Server{
         this._server = http.createServer((req, res) => {
 
             var body = "";
-            var isBroadcast = false;
-
-            this.connectionPool.push(new Connection(req, res));
 
             res.on("error", (err) => {
                 this.errorHandler(err, res);
@@ -39,6 +33,9 @@ class Server{
             req.on("error", (err) => {
                 this.errorHandler(err);
             });
+
+            debugger;
+            req.setSocketKeepAlive(true, 1000);
 
             req.on("data", (data) => {
                 if(req.method === "POST")
@@ -50,19 +47,9 @@ class Server{
                     this.errorHandler(err);
 
                 if(req.method.toUpperCase() === "POST") {
-
-                    if(isBroadcast) {
-                        const messageString = JSON.stringify(this.messages);
-                        this.connectionPool.forEach((connection) => {
-                            connection.broadcast(messageString);
-                        });
-                        isBroadcast = false;
-
-                    } else {
-                        let message = qs.parse(body).message;
-                        this.messages.push(new Message(message, new Date()));
-                        body = "";
-                    }
+                    let message = qs.parse(body).message;
+                    this.messages.push(new Message(message, new Date()));
+                    body = "";
                 }
             }).on("socket", (socket) => {
                 console.log("socket connection");
@@ -83,7 +70,6 @@ class Server{
                         res.end("1");
                         break;
                     case "/broadcast":
-                        isBroadcast = true;
                         res.end("1");
                         break;
                     default:
@@ -108,7 +94,6 @@ class Server{
                     default:
                         res.end("FORBIDDEN");
                 }
-
             }
         });
 
@@ -135,11 +120,11 @@ class Server{
     }
 
     setHeaders(res) {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Request-Method', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'POST, GET');
-        res.setHeader('Access-Control-Allow-Headers', '*');
-        res.setHeader('Connection', 'keep-alive');
+        res.setHeader('access-control-allow-origin', '*');
+        res.setHeader('access-control-request-method', '*');
+        res.setHeader('access-control-allow-methods', 'POST, GET');
+        res.setHeader('access-aontrol-allow-headers', '*');
+        res.setHeader('connection', 'keep-alive');
     }
 
     errorHandler(err) {
@@ -148,5 +133,3 @@ class Server{
 }
 
 export default Server;
-
-

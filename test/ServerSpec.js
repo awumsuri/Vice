@@ -29,17 +29,16 @@ describe("Server Test", () => {
         it("Return 200", () => {
             expect(statusCode).to.equal(200);
         });
-
     });
 
     describe("Messages stored correctly", ()=>{
 
-        const ITERATION = [1,2,3,4,5,6,7,8,9];
+        const ITERATION = [1,2,3,4,5,6,7,8,9,10];
 
         const options = {
             url:SERVER_URL+"/message",
             "content-type": "application/x-www-form-urlencoded",
-            "body": "message=whattimeisit"
+            "body": "message=what time is it"
         };
 
         let statusCode = 0;
@@ -55,7 +54,6 @@ describe("Server Test", () => {
         it.each(ITERATION, "Message sent successfully - Interation %s", ['element'], () => {
             expect(statusCode).to.equal(200);
         });
-
     });
 
     describe("Messages returned correctly", () => {
