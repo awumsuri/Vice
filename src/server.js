@@ -37,8 +37,7 @@ class Server{
             });
 
             req.on("error", (err) => {
-                console.error(err);
-                this.errorHandler(err, res);
+                this.errorHandler(err);
             });
 
             req.on("data", (data) => {
@@ -48,7 +47,7 @@ class Server{
 
             req.on("end", (err)=>{
                 if(err)
-                    this.errorHandler(err, res);
+                    this.errorHandler(err);
 
                 if(req.method.toUpperCase() === "POST") {
 
@@ -65,9 +64,9 @@ class Server{
                         body = "";
                     }
                 }
-            }).on("sockey", (socket) => {
+            }).on("socket", (socket) => {
                 console.log("socket connection");
-            })
+            });
 
             this.setHeaders(res);
 
@@ -106,7 +105,6 @@ class Server{
                         });
                         res.end(html);
                         break;
-
                     default:
                         res.end("FORBIDDEN");
                 }
@@ -114,22 +112,19 @@ class Server{
             }
         });
 
-
-
         this._server.on("clientError", (err, connection) => {
             connection.end("HTTP/1.1 400");
         } )
 
         this._server.on("error", (err)=> {
             console.error(err);
-            //connection.end(err);
         });
 
         this._server.listen(options.port, options.hostname);
     }
 
     createHTMLMessageList() {
-        let html = "<body><ol>";
+        var html = "<body><ol>";
 
         this.messages.forEach((message) => {
             html = html.concat("<li>"+message.message+"-"+message.time+"</li>");
@@ -147,8 +142,8 @@ class Server{
         res.setHeader('Connection', 'keep-alive');
     }
 
-    errorHandler(err, connection) {
-
+    errorHandler(err) {
+        console.error(err);
     }
 }
 

@@ -8,7 +8,7 @@ import Server from "./server";
 const options = {
     hostname: "localhost",
     port: 7777
-}
+};
 
 const server = new Server(options);
 

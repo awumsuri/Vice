@@ -11,15 +11,13 @@ const SERVER_URL = "http://localhost:"+PORT;
 itEach({testPreIteration: true});
 
 describe("Server Test", () => {
-
     const server = new Server({
         hostname: "localhost",
         port: PORT
     });
 
     describe("Does server initialize correctly", ()=>{
-
-        var statusCode = 0;
+        let statusCode = 0;
 
         beforeEach((done)=>{
             const req = request(SERVER_URL, (err, res, body) => {
@@ -37,6 +35,7 @@ describe("Server Test", () => {
     describe("Messages stored correctly", ()=>{
 
         const ITERATION = [1,2,3,4,5,6,7,8,9];
+
         const options = {
             url:SERVER_URL+"/message",
             "content-type": "application/x-www-form-urlencoded",
@@ -62,19 +61,17 @@ describe("Server Test", () => {
     describe("Messages returned correctly", () => {
 
         const MAX_COUNT = 10;
-
         const optionsGet = {
             url:SERVER_URL+"/message"
         };
-
         const optionsPost = {
             url:SERVER_URL+"/message",
             "content-type": "application/x-www-form-urlencoded",
-            "body": "message=whattimeisit"
+            "body": "message=what time is it"
         };
 
-        let counter = 0;
-        let html;
+        var counter = 0;
+        var html;
 
         beforeEach((done)=>{
             for(let i = 0; i < MAX_COUNT; i++){
@@ -97,9 +94,7 @@ describe("Server Test", () => {
 
         it("Messages are listed with the correct amount", ()=>{
             const itemsArray = html.split("<li>");
-            expect(itemsArray.length).to.equal(12);
-            console.log(itemsArray.toString());
+            expect(itemsArray.length).to.equal(12); //Extra 2 due to the head
         })
     })
-})
-
+});
