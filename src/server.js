@@ -42,15 +42,13 @@ class Server{
             req.on("end", (err)=>{
                 if(err)
                     this.errorHandler(err);
-
-                if(req.method.toUpperCase() === "POST") {
+                if(req.method.toUpperCase() === "POST" && req.url === "/message") {
                     let message = qs.parse(body).message;
                     this.messages.push(new Message(message, new Date()));
                     body = "";
                 }
-            }).on("socket", (socket) => {
-                console.log("socket connection");
             });
+
 
             this.setHeaders(res);
 
@@ -99,7 +97,7 @@ class Server{
         } )
 
         this._server.on("error", (err)=> {
-            console.error(err);
+            this.errorHandler(err);
         });
 
         this._server.listen(options.port, options.hostname);
