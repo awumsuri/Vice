@@ -1,6 +1,8 @@
 /**
  * Created by Mtui on 10/10/16.
  */
+"use strict";
+
 import http from "http";
 import Message from "./model/message";
 import Connection from "./model/connection"
@@ -11,6 +13,14 @@ class Server{
     constructor(options) {
         this.messages = [];
         this.connectionPool = [];
+        const agent = http.Agent({
+            keepAlive: true,
+        });
+
+        options = Object.assign({}, options, {
+            agent: agent
+        });
+
         this.startServer(options);
     }
 
@@ -41,8 +51,9 @@ class Server{
                     this.errorHandler(err, res);
 
                 if(req.method.toUpperCase() === "POST") {
-                    const messageString = JSON.stringify(this.messages);
+
                     if(isBroadcast) {
+                        const messageString = JSON.stringify(this.messages);
                         this.connectionPool.forEach((connection) => {
                             connection.broadcast(messageString);
                         });
@@ -54,7 +65,9 @@ class Server{
                         body = "";
                     }
                 }
-            });
+            }).on("sockey", (socket) => {
+                console.log("socket connection");
+            })
 
             this.setHeaders(res);
 
@@ -100,6 +113,8 @@ class Server{
 
             }
         });
+
+
 
         this._server.on("clientError", (err, connection) => {
             connection.end("HTTP/1.1 400");

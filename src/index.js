@@ -1,6 +1,8 @@
 /**
  * Created by Mtui on 10/10/16.
  */
+"use strict";
+
 import Server from "./server";
 
 const options = {
