@@ -38,7 +38,7 @@ describe("Server Test", () => {
 
         const ITERATION = [1,2,3,4,5,6,7,8,9];
         const options = {
-            url:SERVER_URL+"/messages",
+            url:SERVER_URL+"/message",
             "content-type": "application/x-www-form-urlencoded",
             "body": "message=whattimeisit"
         };
@@ -62,30 +62,44 @@ describe("Server Test", () => {
     describe("Messages returned correctly", () => {
 
         const MAX_COUNT = 10;
-        const options = {
-            url:SERVER_URL+"/messages"
+
+        const optionsGet = {
+            url:SERVER_URL+"/message"
         };
 
-        let counter;
+        const optionsPost = {
+            url:SERVER_URL+"/message",
+            "content-type": "application/x-www-form-urlencoded",
+            "body": "message=whattimeisit"
+        };
+
+        let counter = 0;
         let html;
 
         beforeEach((done)=>{
             for(let i = 0; i < MAX_COUNT; i++){
-                request.get(options, (err, res, body) => {
-                    if (counter == MAX_COUNT-1) {
-                        html = res.body;
-                        done();
-                    }
-
+                optionsPost.body = "message="+i;
+                request.post(optionsPost, (err, res, body) => {
                     counter++;
+                    if (counter == MAX_COUNT-1) {
+                        getMessages();
+                    }
+                });
+            }
+
+            function getMessages() {
+                request.get(optionsGet, (err, res, body) => {
+                   html = res.body;
+                    done();
                 });
             }
         });
 
-        it("")
-
-
-
+        it("Messages are listed with the correct amount", ()=>{
+            const itemsArray = html.split("<li>");
+            expect(itemsArray.length).to.equal(12);
+            console.log(itemsArray.toString());
+        })
     })
 })
 
