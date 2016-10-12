@@ -49,7 +49,6 @@ class Server{
                 }
             });
 
-
             this.setHeaders(res);
 
             if(req.method.toUpperCase() === "POST") {
